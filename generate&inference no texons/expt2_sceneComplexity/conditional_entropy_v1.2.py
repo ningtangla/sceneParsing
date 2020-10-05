@@ -122,7 +122,7 @@ class possible_tree_generator():
         self.all_img_tree_list = []
         
     def __call__(self):
-        img_original = cv2.imread('E:/ncrp_generate/' + str(10001 + IMG_LIST[self.img_num]) + '.png')
+        img_original = cv2.imread('../scenes/' + str(10001 + IMG_LIST[self.img_num]) + '.png')
         img_init = img_original
 #        cv2.namedWindow('image')
 #        cv2.imshow('image', img_init)
@@ -150,7 +150,7 @@ def tree_extend(tree):
         return [tree]
     
     else:
-        leaf_nodes = [ n for n,d in tree.out_degree().items() if d==0]
+        leaf_nodes = [ n for n,d in dict(tree.out_degree()).items() if d==0]
         leaf_nodes_terminal = map(lambda x: tree.node[x]['terminal'], leaf_nodes)
         if leaf_nodes_terminal.count(0) == 0:
             tree.node[1]['complete'] = 1
@@ -233,49 +233,49 @@ def make_extended_tree(tree, possible_cut_edges, new_node_id_start, curr_leaf_no
                     extended_trees.append(tree_temp)              
         return extended_trees
 
-def cal_possible_cut_edges(img): 
-    img_height, img_width, channel_num = img.shape
-    edges_vertical = [-1]
-    edges_horizontal = [-1]
-    for i in range(4, img_width - 3):
-        if (img[0][i][0] != img[0][i + 1][0] or img[0][i][1] != img[0][i + 1][1] or img[0][i][2] != img[0][i + 1][2]):  
-            for k in range(i-2, i+3):
-                if (img[img_height - 1][k][0] != img[img_height - 1][k + 1][0] or img[img_height - 1][k][1] != img[img_height - 1][k + 1][1] or img[img_height - 1][k][2] != img[img_height - 1][k + 1][2]):
-                    edges_vertical.append(i)
-                    break
-    edges_vertical.append(img_width - 1)
-    
-    for j in range(4, img_height - 3):
-        if (img[j][0][0] != img[j + 1][0][0] or img[j][0][1] != img[j + 1][0][1] or img[j][0][2] != img[j + 1][0][2]):
-            for l in range(j-2, j+3):
-                if (img[l][img_width - 1][0] != img[l + 1][img_width - 1][0] or img[l][img_width - 1][1] != img[l + 1][img_width - 1][1] or img[l][img_width - 1][2] != img[l + 1][img_width - 1][2]):   
-                    edges_horizontal.append(j)
-                    break
-    edges_horizontal.append(img_height - 1)
-
-    return edges_vertical, edges_horizontal
- 
 #def cal_possible_cut_edges(img): 
 #    img_height, img_width, channel_num = img.shape
 #    edges_vertical = [-1]
 #    edges_horizontal = [-1]
-#    for i in range(5, img_width - 4):
-#        if (img[5][i][2] == 0 and img[5][i + 1][2] == 255):  
+#    for i in range(4, img_width - 3):
+#        if (img[0][i][0] != img[0][i + 1][0] or img[0][i][1] != img[0][i + 1][1] or img[0][i][2] != img[0][i + 1][2]):  
 #            for k in range(i-2, i+3):
-#                if (img[img_height - 5][k][2] == 0 and img[img_height - 5][k + 1][2] == 255):
+#                if (img[img_height - 1][k][0] != img[img_height - 1][k + 1][0] or img[img_height - 1][k][1] != img[img_height - 1][k + 1][1] or img[img_height - 1][k][2] != img[img_height - 1][k + 1][2]):
 #                    edges_vertical.append(i)
 #                    break
 #    edges_vertical.append(img_width - 1)
 #    
-#    for j in range(5, img_height - 4):
-#        if (img[j][5][2] == 0 and img[j + 1][5][2] == 255):
+#    for j in range(4, img_height - 3):
+#        if (img[j][0][0] != img[j + 1][0][0] or img[j][0][1] != img[j + 1][0][1] or img[j][0][2] != img[j + 1][0][2]):
 #            for l in range(j-2, j+3):
-#                if (img[l][img_width - 5][2] == 0 and img[l + 1][img_width - 5][2] == 255):   
+#                if (img[l][img_width - 1][0] != img[l + 1][img_width - 1][0] or img[l][img_width - 1][1] != img[l + 1][img_width - 1][1] or img[l][img_width - 1][2] != img[l + 1][img_width - 1][2]):   
 #                    edges_horizontal.append(j)
 #                    break
 #    edges_horizontal.append(img_height - 1)
 #
 #    return edges_vertical, edges_horizontal
+ 
+def cal_possible_cut_edges(img): 
+    img_height, img_width, channel_num = img.shape
+    edges_vertical = [-1]
+    edges_horizontal = [-1]
+    for i in range(5, img_width - 4):
+        if (img[5][i][2] == 0 and img[5][i + 1][2] == 255):  
+            for k in range(i-2, i+3):
+                if (img[img_height - 5][k][2] == 0 and img[img_height - 5][k + 1][2] == 255):
+                    edges_vertical.append(i)
+                    break
+    edges_vertical.append(img_width - 1)
+    
+    for j in range(5, img_height - 4):
+        if (img[j][5][2] == 0 and img[j + 1][5][2] == 255):
+            for l in range(j-2, j+3):
+                if (img[l][img_width - 5][2] == 0 and img[l + 1][img_width - 5][2] == 255):   
+                    edges_horizontal.append(j)
+                    break
+    edges_horizontal.append(img_height - 1)
+
+    return edges_vertical, edges_horizontal
 
 def cal_p_dirichlet(cut_propotion):
     alpha = ALPHA_BASE * len(cut_propotion)
@@ -289,7 +289,7 @@ def tree_flatten(tree_list):
     return flattened_tree_list
 
 def ncrp_tree_transform(tree):
-    nonleaf_nodes = [ n for n,d in tree.out_degree().items() if d!=0]
+    nonleaf_nodes = [ n for n,d in dict(tree.out_degree()).items() if d!=0]
     for i in range(len(tree.nodes()), 0, -1):
         if i not in nonleaf_nodes:
             tree.node[i]['guest'] = [i]
@@ -321,7 +321,7 @@ class likelihood():
             
     def cal_code_list(self, node_id):
             
-        children = nx.DiGraph.successors(self.graph, node_id)
+        children = list(nx.DiGraph.successors(self.graph, node_id))
         if children:
             self.element_sorted_for = map(lambda x: (len(self.graph.node[x]['guest']), self.cal_children_single_guest_num(x)), children)
             self.element_no_repeat = list(set(self.element_sorted_for))
@@ -466,7 +466,9 @@ class posterior():
             Prior = prior(all_table_partion_list = All_Table_Partion_List)
             Prior_Probability =  Prior()
             posterior_list = map(lambda x: Prior_Probability[x] * Likelihood_Probability[1][x], range(len(Likelihood_Probability[0])))
-            model_p_list[z] = np.array(posterior_list).sum()
+            conditional_entropy_list = map(lambda x: - x * math.log(x, 2), posterior_list)
+            conditional_entropy = np.array(conditional_entropy_list).sum()
+            model_p_list[z] = conditional_entropy
 #            print np.array(posterior_list).sum()
         return model_p_list
 #            img_loglikelihood_given_gamma_alpha = img_loglikelihood_given_gamma_alpha*(np.sum(posterior_list))

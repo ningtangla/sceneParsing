@@ -139,6 +139,7 @@ def main():
     visualizePossiblePartition = VisualizePossiblePartition(imageWidth, imageHeight, imageWidthAllignedWithHumanAnswer, imageHeightAllignedWithHumanAnswer, blankProportion, lineWidth)                
     imagesInformationValues = []
     for imageIndex in imageList:
+        print(imageIndex)
         texonsObserved = pd.read_csv('generate/demoUnscaled' + str(imageIndex) + '.csv')
 
         print(datetime.datetime.now())

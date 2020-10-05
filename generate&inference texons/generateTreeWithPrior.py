@@ -5,7 +5,7 @@ import itertools as it
 import functools as ft
 import math
 import operator as op
-from scipy import misc
+from scipy import special
 import matplotlib.pyplot as pyplot
 from scipy.special import gamma as gammaFunction
 
@@ -101,7 +101,7 @@ def calNonLeafNodePrior(guestsNumInChildrenOfNonLeafNode, gamma):
 def calGuestsPossibleCombinationsNumForGuestsAssignment(guestsAssignment):
     guestsNumTotal = sum(guestsAssignment)
     restGuestsNumAfterSitDownInEachTable = [guestsNumTotal] + [guestsNumTotal - sum(guestsAssignment[:tableIndex]) for tableIndex in range(1, len(guestsAssignment))]
-    guestsPossibleCombinationsNumForGuestsAssignment = ft.reduce(op.mul, [misc.comb(restGuestsNum - 1, guestsNumThisTable - 1) for restGuestsNum, guestsNumThisTable in zip(restGuestsNumAfterSitDownInEachTable, guestsAssignment)])
+    guestsPossibleCombinationsNumForGuestsAssignment = ft.reduce(op.mul, [special.comb(restGuestsNum - 1, guestsNumThisTable - 1) for restGuestsNum, guestsNumThisTable in zip(restGuestsNumAfterSitDownInEachTable, guestsAssignment)])
     return guestsPossibleCombinationsNumForGuestsAssignment
 
 def removeRepeatChildNodeAndMapPriorsToNewTrees(uniqueRepeatChildTrees, uniqueRepeatChildTreesPriors):

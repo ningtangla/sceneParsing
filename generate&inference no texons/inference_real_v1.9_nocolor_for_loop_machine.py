@@ -63,6 +63,12 @@ ALPHA_BASE = 3.5
 
 
 """
+information content record
+"""
+
+INFORMATION_CONTENT_VALUE_LIST = []
+CONDITIONAL_ENTROPY_VALUE_LIST = []
+"""
 code parameters
 """
 
@@ -458,6 +464,13 @@ class posterior():
             most_like_tree.node[1]['possible_trees_num'] = len(Possible_Tree_List)
             most_like_tree.node[1]['p_poster_list'] = posterior_list
             
+            information_content = - math.log(np.array(posterior_list).sum(), 2)
+            INFORMATION_CONTENT_VALUE_LIST.append(information_content)
+            
+            posterior_list_renormalize = np.array(posterior_list) / np.array(posterior_list).sum()
+            conditional_entropy_list = map(lambda x: - x * math.log(x), posterior_list_renormalize)
+            conditional_entropy = np.array(conditional_entropy_list).sum()
+            CONDITIONAL_ENTROPY_VALUE_LIST.append(conditional_entropy) 
 #            num_graph_col = int((len(Possible_Tree_List) - 1)/3) + 1
 #            tree_graph_width = int(TREE_GRAPH_HEIGHT * 1.5 * 3 / num_graph_col)
 ##    
@@ -587,6 +600,10 @@ def main():
     Posterior_Likelihood = posterior(img_num = len(IMG_LIST))
     Posterior_Distribution = Posterior_Likelihood()
     
+    IC_CE = {'information_content': INFORMATION_CONTENT_VALUE_LIST, 'conditional_entropy': CONDITIONAL_ENTROPY_VALUE_LIST}    
+    export_IC_CE = pd.DataFrame(IC_CE, columns = ['information_content', 'conditional_entropy'])
+    export_IC_CE.to_csv('scenes/old_informationcontent_conditionalentropy_' + str(IMG_NUM) +'_' + str(IMG_NUM_BATCH) + '.csv')
+    print ('okkkkk')
 #    p_unnormalized = np.array([float(F_Img_Likelihood.subs({'theta': gamma, 'alpha': alpha})) for gamma, alpha in zip(np.ravel(GAM), np.ravel(ALP))])
 #    p = p_unnormalized/np.sum(p_unnormalized)
 #    P = p.reshape(GAM.shape)

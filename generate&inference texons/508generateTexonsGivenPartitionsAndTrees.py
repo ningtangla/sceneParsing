@@ -145,7 +145,7 @@ def main():
     featureMappingScaleFromPropotionToValue = featuresValueMax / featureProportionScale
     
     "represent featureValue as proportion in range(0, ProportionScale), eg(1, 2, 3, ..10) to normalized the diff feature dimension range "
-    featureMeanIntevel = 0.12 * featureProportionScale
+    featureMeanIntevel = 0.10 * featureProportionScale
     featureStdVarince = 0.06 * featureProportionScale
     featurePossibleMeans = np.arange(3.3 * featureStdVarince, featureProportionScale - 3.3 * featureStdVarince + 0.001, featureMeanIntevel) 
     

@@ -36,6 +36,7 @@ IMG_LIST = np.array([1, 4, 6, 9, 10, 13, 14, 16, 22, 26, 29, 31, 33, 39, 40, 47,
 #HUMAN_LIST = np.array([23, 999, 14, 44, 26, 999, 28, 3, 13, 999, 9, 8, 26, 999, 44, 25, 40, 999, 999, 999, 7, 999, 9, 999, 30, 44, 999, 999, 999, 28, 44, 999, 16, 32, 30, 14, 31, 26, 999, 32, 28, 10, 999, 17, 42, 99, 6, 40])
 HUMAN_LIST = np.array([999] * 48)
 print len(HUMAN_LIST)
+IMG_LIST = np.array([28003])
 IMG_NUM_BATCH = 1
 IMG_NUM = 10001
 
@@ -44,7 +45,7 @@ ncrp parameters
 """
 
 GAMMA = 0.9
-ALL_GUEST_NUM = 6
+ALL_GUEST_NUM = 4
 
 """
 image parameters
@@ -122,7 +123,7 @@ class possible_tree_generator():
         
     def __call__(self):
         print IMG_LIST[self.img_num]
-        img_original = cv2.imread('E:/human_answer/'+str(IMG_LIST[self.img_num])+'.png')
+        img_original = cv2.imread('demo_nocolor/'+str(IMG_LIST[self.img_num])+'.png')
 #        img_init = img_original[153:615, 204:820]
         img_init = img_original
 #        cv2.namedWindow('image')
@@ -518,7 +519,7 @@ class posterior():
             possible_tree_num.append(len(Possible_Tree_List))
             for possible_tree_index in range(len(Possible_Tree_List)):
                 print possible_tree_index
-                nx.write_gpickle(Possible_Tree_List[possible_tree_index], 'E:/ncrp_infer/randommachine/tree_'+str(z + 1)+'_possible_'+str(possible_tree_index)+'.gpickle')
+                #nx.write_gpickle(Possible_Tree_List[possible_tree_index], 'E:/ncrp_infer/randommachine/tree_'+str(z + 1)+'_possible_'+str(possible_tree_index)+'.gpickle')
 #            visualization(most_like_tree, z)
         print possible_tree_num
         np.savetxt('num.txt',possible_tree_num)

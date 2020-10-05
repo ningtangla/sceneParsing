@@ -433,6 +433,7 @@ class posterior():
 #        img_loglikelihood_given_gamma_alpha = 1
 #        f_img_likelihood = Function('f_img_likelihood')
 #        f_all_img = 1
+        tree_entropy_list = []
         for z in range(self.img_num):
 #            print z
             Possible_Tree = possible_tree_generator(z)
@@ -450,7 +451,8 @@ class posterior():
 #            img_loglikelihood_given_gamma_alpha = img_loglikelihood_given_gamma_alpha*(np.sum(posterior_list))
 #        return f_all_img
             posterior_sample_list = map(lambda x: x * 1.0 / np.array(posterior_list).sum(), posterior_list)
-            
+            tree_posterior_entropy = scipy.stats.entropy(posterior_sample_list)
+            tree_entropy_list.append(tree_posterior_entropy)
             max_index = list(np.random.multinomial(1, posterior_sample_list)).index(1)
             if HUMAN_LIST[z] != 999:
                 max_index = HUMAN_LIST[z]
@@ -515,7 +517,8 @@ class posterior():
 #            nx.write_gpickle(most_like_tree, 'E:/ncrp_infer/human/most_like_tree_'+str(z + 1)+'.gpickle')
             nx.write_gpickle(most_like_tree, 'E:/ncrp_infer/human_prior/most_like_tree_'+str(z + 1)+'.gpickle')
 #            visualization(most_like_tree, z)
-    
+            return tree_entropy_list
+
 def visualization(most_like_tree, img_num):
 #    cv2.namedWindow('inference_demo')
     img_show = np.zeros([IMAGE_HEIGHT, IMAGE_WIDTH + GRAPH_WIDTH, 3], 'uint8')
@@ -587,8 +590,9 @@ def main():
 #        IMG_LIST.append(str(i) + '_1')
 #    print IMG_LIST
     Posterior_Likelihood = posterior(img_num = len(IMG_LIST))
-    Posterior_Distribution = Posterior_Likelihood()
-    
+    treeEntropyList = Posterior_Likelihood()
+    imagesTreeEntropyDf = pd.DataFrame(treeEntropyList, columns = ['treeEntropy'])
+    imagesTreeEntropyDf.to_csv('treeEntropyNoTexons.csv')
 #    p_unnormalized = np.array([float(F_Img_Likelihood.subs({'theta': gamma, 'alpha': alpha})) for gamma, alpha in zip(np.ravel(GAM), np.ravel(ALP))])
 #    p = p_unnormalized/np.sum(p_unnormalized)
 #    P = p.reshape(GAM.shape)

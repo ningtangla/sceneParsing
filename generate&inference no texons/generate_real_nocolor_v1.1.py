@@ -22,8 +22,8 @@ sys.setrecursionlimit(100000000)
 enumerate_tree parameter
 """
 
-TREE_NUM = 2000
-IMG_NUM_STRAT = 18001
+TREE_NUM = 100
+IMG_NUM_STRAT = 28001
 
 """
 ncrp parameters
@@ -31,7 +31,7 @@ ncrp parameters
 MIN_GAMMA = 1
 MAX_GAMMA = 1
 GAMMA = [MIN_GAMMA, MAX_GAMMA]
-ALL_GUEST_NUM = 6
+ALL_GUEST_NUM = 4
 GAMMA_RECORD = GAMMA
 """
 image parameters
@@ -83,7 +83,7 @@ class Enumerate_tree():
         
     def assign_table(self, curr_guest):
         self.total_guest_num = self.process_guest.index(curr_guest) + 1    
-        children = nx.DiGraph.successors(self.graph, self.process_node) 
+        children = list(nx.DiGraph.successors(self.graph, self.process_node))
         if self.graph.node[self.process_node]['depth'][0] != self.max_graph_depth :
             
             """           
@@ -181,8 +181,8 @@ class Generate_image_by_tree():
 #        cv2.imshow('demo', self.img)
 #        cv2.waitKey()
         self.img_save = self.img[0:self.image_height, 0:self.image_width]
-        cv2.imwrite('E:/ncrp_generate/'+str(self.img_num)+'.png', self.img_save)
-        cv2.imwrite('E:/ncrp_generate_nocolor/'+str(self.img_num_nocolor)+'.png', self.img_nocolor)
+        cv2.imwrite('demo_color/'+str(self.img_num)+'.png', self.img_save)
+        cv2.imwrite('demo_nocolor/'+str(self.img_num_nocolor)+'.png', self.img_nocolor)
         self.img_num = self.img_num + 1
         self.img_num_nocolor = self.img_num
         
@@ -190,7 +190,7 @@ class Generate_image_by_tree():
         self.propotion = 0
         self.propotion_tuple = [self.propotion]
         self.propotion_list = []
-        self.children = nx.DiGraph.successors(self.graph, process_node)
+        self.children = list(nx.DiGraph.successors(self.graph, process_node))
         self.children.sort()
         
 #        cv2.rectangle(self.img,
@@ -300,7 +300,7 @@ class write_tree_to_excel():
         if len(self.code_list) == self.graph.node[node_id]['depth'][0]:
             self.code_list.append([])
             
-        children = nx.DiGraph.successors(self.graph, node_id)
+        children = list(nx.DiGraph.successors(self.graph, node_id))
         if children:
             self.element_sorted_for = map(lambda x: (len(self.graph.node[x]['guest']), self.cal_children_single_guest_num(x)), children)
             self.element_no_repeat = list(set(self.element_sorted_for))
@@ -338,19 +338,19 @@ class write_tree_to_excel():
         map(self.code_tree, all_tree_graph)
         tree_kind_num = {'tree_code': self.all_tree_code, 'code_num':self.all_code_num}    
         export_tree_kind_num = pd.DataFrame(tree_kind_num, columns = ['tree_code', 'code_num'], dtype='uint64')
-        export_tree_kind_num.to_csv('E:/ncrp_generate/tree_kind_num_' + str(ALL_GUEST_NUM) + '.csv')
+        export_tree_kind_num.to_csv('tree_kind_num_' + str(ALL_GUEST_NUM) + '.csv')
         return tree_kind_num
     
 def main():            
     One_Tree = Enumerate_tree(gamma = GAMMA, all_guest_num = ALL_GUEST_NUM)
     All_Tree = One_Tree(tree_num = TREE_NUM)
-#    Write = write_tree_to_excel(code_base = CODE_BASE)
-#    Ncrp_data = Write(All_Tree)
+    Write = write_tree_to_excel(code_base = CODE_BASE)
+    Ncrp_data = Write(All_Tree)
     One_image = Generate_image_by_tree(image_width = IMAGE_WIDTH, image_height = IMAGE_HEIGHT, alpha_base = ALPHA_BASE, color_space = COLOR_SPACE, graph_width = GRAPH_WIDTH)
     All_image = One_image(All_Tree)
     Parameters = {'gamma': GAMMA_RECORD, 'alpha':ALPHA_RECORD}    
     Export_Parameters = pd.DataFrame(Parameters, columns = ['gamma', 'alpha'])
-    Export_Parameters.to_excel('E:/ncrp_generate/parameter_record.xlsx', 'Sheet1')
+    Export_Parameters.to_csv('parameter_record.csv')
     cv2.destroyAllWindows()
     
 if __name__ == "__main__":

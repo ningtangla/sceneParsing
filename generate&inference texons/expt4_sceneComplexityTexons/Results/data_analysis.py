@@ -14,7 +14,7 @@ from scipy.stats import norm as ssn
 
 z_array_all = np.array([0] * 20) 
 for i in range(10):
-    if i != 0 and i!=3:
+    if i != 20 and i!=23:
         data_all = pd.read_excel('E:/results/' + str(i) + '.xlsx')
         data_key = data_all.loc[:,['img1','img2','pos_ran','Reaction']]
         img1_data = data_key['img1']
